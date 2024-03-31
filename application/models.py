@@ -11,3 +11,14 @@ class IncomeExpenses(db.Model):
     date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     amount = db.Column(db.Integer, nullable=False)
 
+# Product model
+class Product(db.Model):
+
+    product_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    description = db.Column(db.Text)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<Product {self.name}>'
