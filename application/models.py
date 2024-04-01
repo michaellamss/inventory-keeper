@@ -18,6 +18,7 @@ class Product(db.Model):
     name = db.Column(db.String(80), nullable=False)
     price = db.Column(db.Float, nullable=False)
     description = db.Column(db.Text)
+    stock_quantity = db.Column(db.Integer, default=0)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
 
     def __repr__(self):

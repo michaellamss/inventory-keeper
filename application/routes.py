@@ -1,7 +1,7 @@
 from application import app
 from flask import render_template, url_for, redirect,flash, get_flashed_messages
 from application.form import UserDataForm
-from application.models import IncomeExpenses
+from application.models import IncomeExpenses, Product
 from application import db
 import json
 

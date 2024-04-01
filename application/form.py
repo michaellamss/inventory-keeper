@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, SubmitField, IntegerField
-from wtforms.validators import DataRequired
+from wtforms import StringField, SelectField, SubmitField, IntegerField, FloatField, TextAreaField
+from wtforms.validators import DataRequired, NumberRange
 
 class UserDataForm(FlaskForm):
     type = SelectField('Type', validators=[DataRequired()],
@@ -15,3 +15,9 @@ class UserDataForm(FlaskForm):
                             )
     amount = IntegerField('Amount', validators = [DataRequired()])                                   
     submit = SubmitField('Generate Report')                            
+
+class ProductForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    price = FloatField('Price', validators=[DataRequired(), NumberRange(min=0)])
+    stock_quantity = IntegerField('Stock Quantity', validators=[DataRequired(), NumberRange(min=0)])
+    description = TextAreaField('Description')
