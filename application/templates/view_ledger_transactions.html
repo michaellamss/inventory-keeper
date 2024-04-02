@@ -1,0 +1,81 @@
+{% extends 'layout.html' %}
+{% block content %}
+    
+    <div class="col-sm-10 ml-auto mr-auto ">
+        <H2>
+            {% if not ledger.is_applied %}
+                {{ ledger.title }}
+            {% else %}
+                {{ ledger.title + " (Applied)"}}
+            {% endif %}
+        </H2>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Row</th>
+                    <th scope="col">Item ID</th>
+                    <th scope="col">Item Name</th>
+                    <th scope="col">Transaction Type</th>
+                    <th scope="col">Units</th>
+                    <th scope="col">Total Cost / Price</th>
+                    <th scope="col">Signed By</th>
+                    <th scope="col">Notes</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                        <tr>
+                            <th scope="row">{{ loop.index0+1 }}</th>
+                            <td>{{ entry.item_id }}</td>
+                            <td>{{ reference[entry.item_id][0] }}</td>
+                            <td>{{ entry.transaction_type }}</td>
+                            <td>{{ entry.units }}</td>
+                            <td>
+                                {% if entry.transaction_type[-1] == 'n' %}
+                                    {{ entry.units * reference[entry.item_id][1] }}
+                                {% else %}
+                                    {{ entry.units * reference[entry.item_id][2] }}
+                                {% endif %}
+                            </td>         
+                            <td>{{ entry.signed_by }}</td>
+                            <td>{{ entry.notes }}</td>
+                            <td>
+                                {% if not ledger.is_applied %}
+                                    <a href="{{ url_for('delete_transaction', ledger_id=ledger.ledger_id, transaction_id=entry.transaction_id) }}" class="btn btn-outline-danger btn-sm">Delete</a>
+                                {% endif %}
+                            </td>    
+                        </tr>
+                {% endfor %}
+                {% if not ledger.is_applied %}
+                <form action="" method="POST">
+                    {{ form.csrf_token() }}
+                    <tr>
+                        <th scope="row">Add</th>
+                        <td>{{ form.item() }}</td>
+                        <td></td>
+                        <td>{{ form.transaction_type() }}</td>
+                        <td>
+                            {% if form.units.errors %}
+                            {{ form.units(class="form-control form-control-sm is-invalid") }}
+                            {% for error in form.units.errors %}
+                            <div class="invalid-feedback">
+                                <span>{{error}}</span>
+                            </div>
+                            {% endfor %}
+                            {% else %}
+                            {{ form.units(class="form-control form-control-sm") }}
+                            {% endif %}
+                        </td>
+                        <td></td>
+                        <td>{{ form.signed_by(class = "form-control form-control-sm") }}</td>
+                        <td>{{ form.notes(class = "form-control form-control-sm") }}</td>
+                        <td>{{ form.submit(class="btn btn-outline-info") }}</td>
+                    </tr>
+                </form>
+                {% endif %}
+        </tbody>
+        </table>
+    </div>
+{% endblock %}
+

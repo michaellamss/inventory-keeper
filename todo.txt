@@ -1,0 +1,246 @@
+an item is a defined stock item (id count starts from 100000)
+
+a ledger consists of multiple transction (id count starts from 200000)
+each ledger has two state (is_applied = {True, False})
+    unapplied ledger:
+        can modify
+        add or delete transaction
+        delete the entire ledger
+    applied ledger:
+        cannot modify the transaction
+        cannot delete the entire ledger
+each row is a transaction, containing following information
+    item ID (auto fill)
+    item name (select)
+    transaction_type (stock in / stock out)
+    unit
+    total cost / price (auto fill)
+    Signed by
+    Remarks/Notes
+
+
+
+
+a transaction is a row record of change in item quantity, either (transaction_type={"stock-in", "stock-out"}) (id count starts from 300000)
+transaction is only created when a ledger is applied
+transaction should associated with a ledger and an item, relational db
+
+the income is the sum of all stock-out transactions' quantity multiplied by the item unit price
+the expense is the sum of all stock-in transctions' quantity multiplied by the item unit cost
+
+the user(manager) can:
+    # add item (the initial quantity will not be a part of expense)
+    # view item and the balance
+    # delete item (the balance quantity will not be a part of income)
+    # create ledger from brand new
+    # view an old ledger
+    # modify an old ledger (if unapplied)
+    # delete an old ledger (if unapplied)
+    # apply a ledger
+
+to-do list:
+    set buttons for navigations (Daniel only implemented the navigation by url)
+    render income and expense dashboard
+    implement dashboard by different time period
+    set warning if stock is low
+    Front (I think it is good enough (Daniel's opinion))
+    implement fix items (optional?)
+    AI (optional?)
+
+
+
+
+ItemModel:
+ReferenceID (Primary Key): A unique identifier for each stock item type.
+Name: The name of the item.
+Description: A brief description of the item.
+Category: The category or classification of the item. (cloth, beverages)
+Unit Cost: The cost of a single unit of the item. This could be an average cost or the most recent purchase cost.
+Unit Price: The selling price of a single unit.
+SupplierDescription: A reference to the supplier (this could be a foreign key if you have a separate suppliers table).
+Minimum Stock Level: The minimum quantity of this item that should be kept in stock.
+Quantity: 
+
+LedgerFormModel:
+LedgerFormID (Primary Key)
+Date
+FileName
+Applied
+
+
+TransactionModel
+TransactionID (Primary Key): A unique identifier for each transaction.
+LedgerFormID: reference id to each form
+ItemID: A reference to the stock item type (foreign key linking back to the Stock Item Type table).
+Transaction Type: Indicates whether the transaction is stock-in or stock-out
+Units: The quantity of stock received or dispensed in the transaction.
+Signed By: The person who performed the transaction.
+Remarks/Notes: Any additional notes about the transaction.
+
+
+
+[("Fruits and Vegetables", "Fruits and Vegetables"),
+("Meat and Seafood", "Meat and Seafood"),
+("Dairy and Eggs", "Dairy and Eggs"),
+("Frozen Foods", "Frozen Foods"),
+("Pantry Staples", "Pantry Staples"),
+("Snacks and Sweets", "Snacks and Sweets"),
+("Beverages", "Beverages"),
+("Bakery and Bread", "Bakery and Bread"),
+("Health and Wellness", "Health and Wellness"),
+("International Foods", "International Foods"),
+("Delicatessen", "Delicatessen"),
+("Household Essentials", "Household Essentials"),
+("Personal Care and Beauty", "Personal Care and Beauty"),
+("Baby Products, Baby Products"),
+("Pet Supplies", "Pet Supplies"),
+("Kitchen and Dining", "Kitchen and Dining"),
+("Home and Electronics", "Home and Electronics"),
+("Gardening and Outdoor", "Gardening and Outdoor"),
+("Apparel and Accessories", "Apparel and Accessories"),
+("Seasonal and Holiday", "Seasonal and Holiday"]
+
+
+
+Fruits and Vegetables
+
+    Fresh Fruits
+    Fresh Vegetables
+    Pre-cut and Packaged Produce
+    Organic Produce
+    Internat
+    ional & Exotic Varieties
+Meat and Seafood
+
+    Fresh Meats (Beef, Pork, Lamb)
+    Poultry
+    Fresh Seafood
+    Processed Meats (Sausages, Bacon)
+    Meat Substitutes & Plant-Based Proteins
+
+Dairy and Eggs
+
+    Milk & Milk Alternatives
+    Cheese
+    Yogurt
+    Butter & Margarine
+    Eggs
+
+Frozen Foods
+
+    Frozen Meals & Entrees
+    Ice Cream & Desserts
+    Frozen Vegetables
+    Frozen Meat & Seafood
+    Frozen Pizza
+
+Pantry Staples
+
+    Baking Ingredients
+    Cooking Oils & Vinegar
+    Canned Goods
+    Spices & Seasonings
+    Pasta & Rice
+
+Snacks and Sweets
+
+    Chips & Pretzels
+    Chocolate & Candy
+    Nuts & Dried Fruits
+    Crackers & Popcorn
+    Granola Bars & Snack Bars
+
+Beverages
+
+    Soft Drinks
+    Juice & Non-Alcoholic Drinks
+    Tea & Coffee
+    Water & Flavored Water
+    Alcoholic Beverages (where permitted)
+
+Bakery and Bread
+
+    Fresh Bread & Rolls
+    Pastries & Cakes
+    Cookies & Biscuits
+    Gluten-Free & Special Diet Baked Goods
+
+Health and Wellness
+
+    Dietary Supplements
+    Sports Nutrition
+    Natural Remedies
+    Health Foods & Superfoods
+
+International Foods
+
+    Asian Cuisine
+    Hispanic Foods
+    European Delicacies
+    Middle Eastern & African Foods
+
+Delicatessen
+
+    Prepared Foods & Salads
+    Gourmet Cheeses
+    Deli Meats & Specialty Sausages
+    Olives & Pickles
+
+Household Essentials
+
+    Cleaning Supplies
+    Laundry Products
+    Paper Goods
+    Dishwashing Detergents
+
+Personal Care and Beauty
+
+    Hair Care Products
+    Skin Care Products
+    Oral Care Products
+    Cosmetics & Makeup
+    
+Baby Products
+
+    Baby Food & Formula
+    Diapers & Wipes
+    Baby Care & Bath Products
+    Feeding Accessories
+
+Pet Supplies
+
+    Pet Food & Treats
+    Pet Care & Grooming
+    Toys & Accessories
+
+Kitchen and Dining
+
+    Cookware & Bakeware
+    Utensils & Gadgets
+    Tableware & Linens
+    Storage & Organization
+
+Home and Electronics
+
+    Small Appliances
+    Batteries & Light Bulbs
+    Home Decor & Furnishings
+    Audio & Video Accessories
+
+Gardening and Outdoor
+
+    Garden Tools & Supplies
+    Outdoor Living & Decor
+    Plants & Flowers
+    
+Apparel and Accessories
+
+    Clothing
+    Shoes
+    Accessories & Jewelry
+
+Seasonal and Holiday
+
+    Seasonal Decorations
+    Holiday-specific Foods
+    Gift Ideas & Wrapping Supplies

@@ -1,0 +1,46 @@
+{% extends 'layout.html' %}
+{% block content %}
+    
+    <div class="col-sm-10 ml-auto mr-auto ">
+        <H2>Transaction Overview</H2>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Transaction_id</th>
+                    <th scope="col">Item</th>
+                    <th scope="col">Ledger</th>
+                    <th scope="col">Transaction_type</th>
+                    <th scope="col">Units</th>
+                    <th scope="col">Total Cost / Price</th>
+                    <th scope="col">Signed By</th>
+                    <th scope="col">Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                        <tr>
+                            <th scope="row">{{entry.transaction_id}}</th>
+                            <td>{{ reference[entry.item_id][0] }} ({{ entry.item_id }})</td>
+                            <td>
+                                <a href="{{ url_for('view_ledger_transactions', ledger_id=entry.ledger_id) }}">
+                                    {{ ledger_reference[entry.ledger_id] }} ({{ entry.ledger_id }})
+                                </a>
+                            </td>
+                            <td>{{ entry.transaction_type }}</td>
+                            <td>{{entry.units}}</td>
+                            <td>
+                                {% if entry.transaction_type[-1] == 'n' %}
+                                    {{ entry.units * reference[entry.item_id][1] }}
+                                {% else %}
+                                    {{ entry.units * reference[entry.item_id][2] }}
+                                {% endif %}
+                            </td>
+                            <td>{{ entry.signed_by }}</td>
+                            <td>{{ entry.notes }}</td>
+                        </tr>
+                {% endfor %}
+        </tbody>
+        </table>
+    </div>
+{% endblock %}
+

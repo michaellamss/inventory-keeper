@@ -1,0 +1,110 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="col-xs-10 col-sm-6 col-md-6">
+    <h2>Add Item Page</h2>
+    <div class="card card-style mb-2">
+        <div class="card-body">
+            <form action="" method="POST">
+                {{ form.csrf_token() }}
+                <fieldset class="form-group">
+            
+                    <div class="form-group">
+                        {{ form.name.label(class="form-control-label") }}
+                        {% if form.name.errors %}
+                        {{ form.name(class="form-control form-control-sm is-invalid") }}
+                        {% for error in form.name.errors %}
+                        <div class="invalid-feedback">
+                            <span>{{error}}</span>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        {{ form.name(class="form-control form-control-sm") }}
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.description.label(class = "form-control-label") }}
+                        {{ form.description(class = "form-control form-control-sm") }}
+                    </div>
+            
+                    <div class="form-group">
+                        {{ form.category.label(class = "form-control-label") }}
+                        {{ form.category(class = "form-control form-control-sm") }}
+                    </div>
+            
+                    <div class="form-group">
+                        {{ form.unit_cost.label(class="form-control-label") }}
+                        {% if form.unit_cost.errors %}
+                        {{ form.unit_cost(class="form-control form-control-sm is-invalid") }}
+                        {% for error in form.unit_cost.errors %}
+                        <div class="invalid-feedback">
+                            <span>{{error}}</span>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        {{ form.unit_cost(class="form-control form-control-sm") }}
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.unit_price.label(class="form-control-label") }}
+                        {% if form.unit_price.errors %}
+                        {{ form.unit_price(class="form-control form-control-sm is-invalid") }}
+                        {% for error in form.unit_price.errors %}
+                        <div class="invalid-feedback">
+                            <span>{{error}}</span>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        {{ form.unit_price(class="form-control form-control-sm") }}
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.quantity.label(class="form-control-label") }}
+                        {% if form.quantity.errors %}
+                        {{ form.quantity(class="form-control form-control-sm is-invalid") }}
+                        {% for error in form.quantity.errors %}
+                        <div class="invalid-feedback">
+                            <span>{{error}}</span>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        {{ form.quantity(class="form-control form-control-sm") }}
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.min_stock_level.label(class="form-control-label") }}
+                        {% if form.min_stock_level.errors %}
+                        {{ form.min_stock_level(class="form-control form-control-sm is-invalid") }}
+                        {% for error in form.min_stock_level.errors %}
+                        <div class="invalid-feedback">
+                            <span>{{error}}</span>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        {{ form.min_stock_level(class="form-control form-control-sm") }}
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.supplier_information.label(class = "form-control-label") }}
+                        {{ form.supplier_information(class = "form-control form-control-sm") }}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.notes.label(class = "form-control-label") }}
+                        {{ form.notes(class = "form-control form-control-sm") }}
+                    </div>
+
+                    <div class="form-group border-bottom pb-3">
+                        {{ form.submit(class="btn btn-outline-info")}}
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+    
+{% endblock %}

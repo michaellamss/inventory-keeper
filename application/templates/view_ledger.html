@@ -1,0 +1,44 @@
+{% extends 'layout.html' %}
+{% block content %}
+    
+    <div class="col-sm-10 ml-auto mr-auto ">
+        <H2>Ledger Manager</H2>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Ledger ID</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Delete</th>
+                    <th scope="col">Apply</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                        <tr>
+                            <th scope="row">{{entry.ledger_id}}</th>
+                            <td>
+                                <a href="{{ url_for('view_ledger_transactions', ledger_id=entry.ledger_id) }}">{{ entry.title }}</a>
+                            </td>
+                            <td>{{ entry.date.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ "Applied" if entry.is_applied else "Not Applied" }}</td>
+                            <td>
+                                {% if entry.is_applied %}
+                                {% else %}
+                                    <a href="{{ url_for('delete_ledger', ledger_id=entry.ledger_id) }}" class="btn btn-outline-danger btn-sm">Delete</a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if entry.is_applied %}
+                                {% else %}
+                                    <a href="{{ url_for('apply_ledger', ledger_id=entry.ledger_id) }}" class="btn btn-outline-info">Apply</a>
+                                {% endif %}
+                            </td>                              
+                        </tr>
+                {% endfor %}
+        </tbody>
+        </table>
+    </div>
+{% endblock %}
+
