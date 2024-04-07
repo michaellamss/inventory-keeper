@@ -36,7 +36,7 @@
                                 <a class="nav-item nav-link" href="{{ url_for('view_item') }}">Item</a>
                                 <a class="nav-item nav-link" href="{{ url_for('view_transactions') }}">Transactions</a>
                                 <a class="nav-item nav-link" href="{{ url_for('add_expense') }}">Add</a>
-                                <a class="nav-item nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                                <a class="nav-item nav-link" href="{{ url_for('dashboard', item_id=100001, date='1m') }}">Dashboard</a>
                             </div>
                         </div>
                     </nav>

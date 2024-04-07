@@ -4,6 +4,8 @@ from application.form import UserDataForm, AddItemForm, AddLedgerForm, AddTransa
 from application.models import IncomeExpenses, ItemModel, LedgerModel, TransactionModel
 from application import db
 from application import db_util
+from datetime import datetime, timedelta
+from collections import OrderedDict
 import json
 
 @app.before_request
@@ -36,6 +38,52 @@ def delete(entry_id):
     flash("Entry deleted", "success")
     return redirect(url_for("index"))
 
+
+@app.route('/dashboard/<int:item_id>/<string:date>', methods=['GET'])
+def dashboard(item_id, date):
+    transactions = []
+
+    # 根据日期字符串解析时间段
+    if date == '1m':
+        start_date = datetime.now() - timedelta(days=30)
+    elif date == '3m':
+        start_date = datetime.now() - timedelta(days=90)
+    elif date == '6m':
+        start_date = datetime.now() - timedelta(days=180)
+    elif date == '1y':
+        start_date = datetime.now() - timedelta(days=365)
+    else:
+        # 无效的时间段
+        return render_template('dashboard.html', transactions=transactions)
+
+    # 根据 item_id 和时间段从数据库中查询交易数据
+    transactions = get_item_data(item_id, start_date)
+
+    return render_template('dashboard.html', transaction_data=transactions)
+
+def get_item_data(item_id, start_date):
+    transactions = TransactionModel.query.join(
+        LedgerModel, TransactionModel.ledger_id == LedgerModel.ledger_id
+    ).filter(
+        TransactionModel.item_id == item_id,
+        LedgerModel.date >= start_date,
+        TransactionModel.transaction_type == "Stock-out",
+        TransactionModel.is_applied == True
+    ).with_entities(
+        TransactionModel.units,
+        LedgerModel.date
+    ).all()
+
+    transaction_data = []
+    for transaction in transactions:
+        transaction_dict = OrderedDict()
+        transaction_dict['units'] = transaction.units
+        transaction_dict['date'] = transaction.date.isoformat()
+        transaction_data.append(transaction_dict)
+
+    return transaction_data
+
+'''
 @app.route('/dashboard')
 def dashboard():
     income_vs_expense = db.session.query(db.func.sum(IncomeExpenses.amount), IncomeExpenses.type).group_by(IncomeExpenses.type).order_by(IncomeExpenses.type).all()
@@ -64,6 +112,8 @@ def dashboard():
                             over_time_expenditure=json.dumps(over_time_expenditure),
                             dates_label =json.dumps(dates_label)
                         )
+'''
+
     
 @app.route('/add_item', methods = ["POST", "GET"])
 def add_item():
