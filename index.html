@@ -1,0 +1,256 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+    <style>
+        .div {
+            display: flex; 
+            width: 893.352px; 
+            align-items: center; 
+            gap: 10px;
+            padding-bottom: 60px;
+        }
+
+        .text-wrapper {
+            color: #414141;
+            font-family: Outfit;
+            font-size: 26px;
+            font-style: normal;
+            font-weight: 600;
+            line-height: normal;
+        }
+    </style>
+    
+    <div class="col-sm-10 ml-auto mr-auto ">
+        <div class="div">
+            <svg xmlns="http://www.w3.org/2000/svg" width="29" height="30" viewBox="0 0 29 30" fill="none">
+                <path d="M2.41665 11.6771V5.9375C2.41665 5.45417 2.5979 5.03125 2.9604 4.66875C3.3229 4.30625 3.74581 4.125 4.22915 4.125H24.7708C25.2541 4.125 25.6771 4.30625 26.0396 4.66875C26.4021 5.03125 26.5833 5.45417 26.5833 5.9375V11.6771H24.7708V5.9375H4.22915V11.6771H2.41665ZM4.22915 22.25C3.74581 22.25 3.3229 22.0687 2.9604 21.7062C2.5979 21.3437 2.41665 20.9208 2.41665 20.4375V13.4896H4.22915V20.4375H24.7708V13.4896H26.5833V20.4375C26.5833 20.9208 26.4021 21.3437 26.0396 21.7062C25.6771 22.0687 25.2541 22.25 24.7708 22.25H4.22915ZM1.20831 25.875V24.0625H27.7916V25.875H1.20831ZM2.41665 13.4896V11.6771H9.66665C9.831 11.6771 9.98789 11.7174 10.1373 11.7979C10.2867 11.8785 10.4017 11.9993 10.4823 12.1604L12.1437 15.5437L16.101 8.56562C16.1816 8.40451 16.2974 8.28871 16.4484 8.21823C16.5995 8.14774 16.7567 8.1125 16.9202 8.1125C17.0837 8.1125 17.2398 8.14774 17.3885 8.21823C17.5371 8.28871 17.6517 8.40451 17.7323 8.56562L19.2594 11.6771H26.5833V13.4896H18.6989C18.5328 13.4896 18.3742 13.4493 18.2232 13.3687C18.0721 13.2882 17.9588 13.1674 17.8833 13.0062L16.8562 10.9219L12.8989 17.8396C12.824 18.0007 12.7115 18.1215 12.5615 18.2021C12.4115 18.2826 12.2541 18.3229 12.0891 18.3229C11.9241 18.3229 11.7661 18.2826 11.6151 18.2021C11.464 18.1215 11.3482 18.0007 11.2677 17.8396L9.09269 13.4896H2.41665Z" fill="#414141"/>
+            </svg>
+            <div class="text-wrapper">AI Recommdeation</div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-10 col-sm-6 col-md-6">
+                <div class="card card-style mb-2">
+                    <div class="card-body">
+                        <div class="chart-container" style="position: relative;">
+                            <canvas id="revenue"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-xs-10 col-sm-6 col-md-6">
+                <div class="card card-style mb-2">
+                    <div class="card-body">
+                        <div class="chart-container" style="position: relative;">
+                            <canvas id="income_vs_expense"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-10 col-sm-6 col-md-6">
+                <div class="card card-style mb-2">
+                    <div class="card-body">
+                        <div class="chart-container" style="position: right;">
+                            <canvas id="profitable"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-xs-10 col-sm-6 col-md-6">
+                <div class="card card-style mb-2">
+                    <div class="card-body">
+                        <div class="chart-container" style="position: relative;">
+                            <canvas id="inventory"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% block javascript %}
+    <script>
+        let item_data = JSON.parse({{ quantity_changes | tojson }})
+        let revenue_data = JSON.parse({{ revenue | tojson }})
+        let inventory_data = JSON.parse({{ inventory | tojson }})
+        let profit_data = JSON.parse({{ profit | tojson }})
+
+        Chart.scaleService.updateScaleDefaults('linear', {
+            ticks: {
+                min: 0
+            }
+        });
+
+        var name_list = [];
+        var quantity_list = [];
+    
+        for (var i = 0; i < item_data.length; i++) {
+            var item = item_data[i];
+
+            // Access properties of each JSON object
+            var name = item.name;
+            var quantity = item.quantity_change;
+
+            // Perform actions with the data
+            name_list.push(name);
+            quantity_list.push(quantity)
+        }
+
+    
+        let income_vs_expense_chart = new Chart(income_vs_expense, {
+            type: 'bar',
+            data: {    
+                labels: name_list,
+                datasets: [{
+                    data: quantity_list,
+                    backgroundColor: ['#5DA5DA ', '#FAA43A', '#60BD68', '#B276B2', '#E16851', '#FB8267'],
+                    borderWidth: 1,
+                    hoverBorderColor: "black",
+                    hoverBorderWidth: 2,
+                    hoverBackgroundColor: 'rgba(154, 245, 140)',
+                    pointHoverRadius: 5
+                }],
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: "Top Best Sellers over this month",
+                    fontSize: 20,
+                },
+                legend: {
+                    position: "right",
+                    labels: {
+                        fontColor: "gray"
+                    },
+                    display: false,
+                },
+                elements: {
+                    hitRadius: 3,
+                }
+            }
+        })
+
+        var date_list = [];
+        var revenue_list = [];
+
+        for (var i = 0; i < revenue_data.length; i++) {
+
+            // Access properties of each JSON object
+            let date = revenue_data[i].date;
+            let revenue = revenue_data[i].revenue;
+
+            // Perform actions with the data
+            date_list.push(date);
+            revenue_list.push(revenue)
+        }
+
+        let revenue_chart = new Chart(revenue, {
+            type: 'line',
+            data: {    
+                labels: date_list,
+                datasets: [{
+                    data: revenue_list,
+                    backgroundColor: ['#60BD68']
+                }],
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: "Revenue of the month",
+                    fontSize: 20,
+                },
+                legend: {
+                    position: "right",
+                    labels: {
+                        fontColor: "gray"
+                    },
+                    display: false,
+                },
+                elements: {
+                    hitRadius: 3,
+                }
+            }
+        })
+
+        let profitable_chart = new Chart(profitable, {
+            type: 'pie',
+            data: {    
+                labels: ['Cost', 'Profit'],
+                datasets: [{
+                    data: [profit_data['cost'], profit_data['profit']],
+                    backgroundColor: ['#5DA5DA ', '#FAA43A', '#60BD68', '#B276B2', '#E16851', '#FB8267'],
+                }],
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: "The most profitable item - " + profit_data['name'],
+                    fontSize: 20,
+                },
+                legend: {
+                    position: "right",
+                    labels: {
+                        fontColor: "gray"
+                    },
+                    display: true,
+                },
+                elements: {
+                    hitRadius: 3,
+                }
+            }
+        })
+
+        var name_list = [];
+        var quantity_list = [];
+    
+        for (var i = 0; i < inventory_data.length; i++) {
+            var item = inventory_data[i];
+
+            // Access properties of each JSON object
+            var name = item.name;
+            var quantity = item.quantity;
+
+            // Perform actions with the data
+            name_list.push(name);
+            quantity_list.push(quantity)
+        }
+
+        let inventory_chart = new Chart(inventory, {
+            type: 'bar',
+            data: {    
+                labels: name_list,
+                datasets: [{
+                    data: quantity_list,
+                    backgroundColor: ['#5DA5DA ', '#FAA43A', '#60BD68', '#B276B2', '#E16851', '#FB8267']
+                }],
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: "Inventory",
+                    fontSize: 20,
+                },
+                legend: {
+                    position: "right",
+                    labels: {
+                        fontColor: "gray"
+                    },
+                    display: false,
+                },
+                elements: {
+                    hitRadius: 3,
+                }
+            }
+        })
+    </script>
+    {% endblock%}
+
+{% endblock %}
+
+
+
